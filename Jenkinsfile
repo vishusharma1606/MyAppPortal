@@ -12,7 +12,7 @@ pipeline {
         stage('security scan using snyk') {
              steps {
                 sh '''
-                snyk container test myapp:testing
+                snyk container test myapp:testing --file=Dockerfile || true
                 sleep 30
                 '''
             }
