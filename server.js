@@ -8,6 +8,7 @@ const app = express();
 const dbFile = path.join(__dirname, 'data', 'db.json');
 const adapter = new JSONFile(dbFile);
 const db = new Low(adapter, { users: [], applications: [] });
+const bcrypt = require('bcryptjs');
 
 async function prepareDb() {
   await db.read();
@@ -47,7 +48,8 @@ app.post('/api/register', async (req, res) => {
   const existing = db.data.users.find((u) => u.username === username);
   if (existing) return res.status(400).json({ error: 'User already exists' });
   const id = db.data.users.length ? Math.max(...db.data.users.map((u) => u.id)) + 1 : 1;
-  db.data.users.push({ id, username, password });
+  const hashed = bcrypt.hashSync(password, 10);
+  db.data.users.push({ id, username, password: hashed });
   await db.write();
   return res.json({ message: 'Account registered successfully. Please login.' });
 });
@@ -57,7 +59,7 @@ app.post('/api/login', async (req, res) => {
   if (!username || !password) return res.status(400).json({ error: 'Provide username and password' });
   await db.read();
   const user = db.data.users.find((u) => u.username === username);
-  if (!user || user.password !== password) {
+  if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.status(400).json({ error: 'Invalid credentials' });
   }
   req.session.userId = user.id;
