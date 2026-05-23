@@ -1,2 +1,17 @@
-
-{}
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "vishu",
+      "password": "1234"
+    }
+  ],
+  "applications": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "name": "vishu",
+      "description": "2222"
+    }
+  ]
+}
