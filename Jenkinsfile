@@ -12,8 +12,8 @@ pipeline {
         stage('security scan using snyk') {
              steps {
                 sh '''
-                snyk test --docker myapp:testing
-                sleep 50
+                snyk container test myapp:testing
+                sleep 30
                 '''
             }
         }
