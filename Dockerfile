@@ -1,4 +1,4 @@
-FROM node:20.23.1-bullseye-slim
+FROM node:20.23.1
 WORKDIR /myapp
 COPY . .
 RUN npm install
