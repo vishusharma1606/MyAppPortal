@@ -10,12 +10,16 @@ const adapter = new JSONFile(dbFile);
 const db = new Low(adapter, { users: [], applications: [] });
 
 async function prepareDb() {
-  await db.read();
-  db.data = db.data || { users: [], applications: [] };
+  await readDb();
   await db.write();
 }
 
-prepareDb();
+async function readDb() {
+  await db.read();
+  db.data = db.data || { users: [], applications: [] };
+}
+
+// prepareDb will be awaited before server start to ensure DB file is initialized
 
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(express.json());
@@ -34,7 +38,7 @@ function requireAuth(req, res, next) {
 }
 
 app.get('/api/user', requireAuth, async (req, res) => {
-  await db.read();
+  await readDb();
   const user = db.data.users.find((u) => u.id === req.session.userId);
   const apps = db.data.applications.filter((app) => app.user_id === req.session.userId);
   res.json({ user: { id: user.id, username: user.username }, apps });
@@ -43,7 +47,7 @@ app.get('/api/user', requireAuth, async (req, res) => {
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Provide username and password' });
-  await db.read();
+  await readDb();
   const existing = db.data.users.find((u) => u.username === username);
   if (existing) return res.status(400).json({ error: 'User already exists' });
   const id = db.data.users.length ? Math.max(...db.data.users.map((u) => u.id)) + 1 : 1;
@@ -55,7 +59,7 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Provide username and password' });
-  await db.read();
+  await readDb();
   const user = db.data.users.find((u) => u.username === username);
   if (!user || user.password !== password) {
     return res.status(400).json({ error: 'Invalid credentials' });
@@ -69,7 +73,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.get('/api/applications', requireAuth, async (req, res) => {
-  await db.read();
+  await readDb();
   const apps = db.data.applications.filter((app) => app.user_id === req.session.userId);
   res.json({ apps });
 });
@@ -77,7 +81,7 @@ app.get('/api/applications', requireAuth, async (req, res) => {
 app.post('/api/applications', requireAuth, async (req, res) => {
   const { name, description } = req.body;
   if (!name) return res.status(400).json({ error: 'Name is required' });
-  await db.read();
+  await readDb();
   const id = db.data.applications.length ? Math.max(...db.data.applications.map((a) => a.id)) + 1 : 1;
   db.data.applications.push({ id, user_id: req.session.userId, name, description: description || '' });
   await db.write();
@@ -86,11 +90,15 @@ app.post('/api/applications', requireAuth, async (req, res) => {
 
 app.delete('/api/applications/:id', requireAuth, async (req, res) => {
   const id = Number(req.params.id);
-  await db.read();
+  await readDb();
   db.data.applications = db.data.applications.filter((app) => !(app.id === id && app.user_id === req.session.userId));
   await db.write();
   res.json({ message: 'Application removed.' });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
+
+(async () => {
+  await prepareDb();
+  app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
+})();
