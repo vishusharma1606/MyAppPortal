@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard - Simple Auth App</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Simple Auth App</h1>
+      <div class="nav">
+        <div class="user-dropdown">
+          <button class="trigger" data-dropdown-toggle="#user-menu">Welcome, <strong><%= user %></strong> ▾</button>
+          <div id="user-menu" class="dropdown">
+            <a href="#">Profile</a>
+            <a href="/my-applications">My Applications</a>
+            <a href="/logout">Logout</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <% if (error) { %>
+        <div class="flash error"><span class="msg"><%= error %></span><button class="close" aria-label="Dismiss">&times;</button></div>
+      <% } else if (message) { %>
+        <div class="flash success"><span class="msg"><%= message %></span><button class="close" aria-label="Dismiss">&times;</button></div>
+      <% } %>
+
+      <section class="create-app card">
+        <h2>Create Application</h2>
+        <form method="post" action="/applications">
+          <label>Name</label>
+          <input name="name" />
+          <label>Description</label>
+          <textarea name="description"></textarea>
+          <button type="submit">Create</button>
+        </form>
+      </section>
+
+      <section class="apps card">
+        <h2>Your Applications</h2>
+        <% if (!apps || apps.length === 0) { %>
+          <p>No applications yet — create one above.</p>
+        <% } else { %>
+          <ul>
+            <% apps.forEach(function(a){ %>
+              <li>
+                <strong><%= a.name %></strong> — <%= a.description %>
+                <form method="post" action="/applications/delete" class="inline-form">
+                  <input type="hidden" name="id" value="<%= a.id %>" />
+                  <input type="hidden" name="redirectTo" value="/dashboard" />
+                  <button type="submit" class="delete-button">Remove</button>
+                </form>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

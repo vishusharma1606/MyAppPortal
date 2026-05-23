@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register - Simple Auth App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Simple Auth App</h1>
+    </header>
+    <main>
+      <section class="auth card">
+        <div id="message"></div>
+        <h2>Create Account</h2>
+        <form id="register-form">
+          <label>Username</label>
+          <input id="register-username" name="username" required />
+          <label>Password</label>
+          <input id="register-password" type="password" name="password" required />
+          <button type="submit">Register</button>
+        </form>
+        <div class="link-row">
+          <span>Already registered?</span>
+          <a class="secondary-button" href="index.html">Login instead</a>
+        </div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

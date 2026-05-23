@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard - Simple Auth App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Simple Auth App</h1>
+      <div class="nav">
+        <a class="nav-link" href="myapplications.html">My Applications</a>
+        <button id="logout-button" class="secondary-button">Logout</button>
+      </div>
+    </header>
+    <main>
+      <section class="create-app card">
+        <div id="message"></div>
+        <h2>Create Application</h2>
+        <form id="application-form">
+          <label>Name</label>
+          <input id="app-name" name="name" required />
+          <label>Description</label>
+          <textarea id="app-description" name="description"></textarea>
+          <button type="submit">Create</button>
+        </form>
+      </section>
+      <section class="apps card">
+        <h2>Your Applications</h2>
+        <div id="apps-list"></div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Simple Auth App</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Simple Auth App</h1>
+    </header>
+    <main>
+      <section class="auth">
+        <% if (error) { %>
+            <div class="flash error"><span class="msg"><%= error %></span><button class="close" aria-label="Dismiss">&times;</button></div>
+          <% } else if (message) { %>
+            <div class="flash success"><span class="msg"><%= message %></span><button class="close" aria-label="Dismiss">&times;</button></div>
+          <% } %>
+        <div class="forms">
+          <form method="post" action="/login" class="card">
+            <h2>Login</h2>
+            <label>Username</label>
+            <input name="username" />
+            <label>Password</label>
+            <input type="password" name="password" />
+            <button type="submit">Login</button>
+          </form>
+
+          <div class="card register-card">
+            <h2>New here?</h2>
+            <p>Create a new account and then login.</p>
+            <a class="secondary-button" href="/register">Create New Account</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
