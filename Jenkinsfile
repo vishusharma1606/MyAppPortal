@@ -15,6 +15,12 @@ pipeline {
             }
         }
 
+        stage('wait for application to start') {
+            steps {
+                sh 'sleep 5'
+            }
+        }
+
         stage('Test Application') {
             steps {
                 sh 'curl http://127.0.0.1:5001'
