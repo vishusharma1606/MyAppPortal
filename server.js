@@ -1,7 +1,6 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const crypto = require('crypto');
 const { Low } = require('lowdb');
 const { JSONFile } = require('lowdb/node');
 
@@ -10,11 +9,6 @@ const dbFile = path.join(__dirname, 'data', 'db.json');
 const adapter = new JSONFile(dbFile);
 const db = new Low(adapter, { users: [], applications: [] });
 const bcrypt = require('bcryptjs');
-
-const sessionSecret = process.env.SESSION_SECRET;
-if (!sessionSecret) {
-  throw new Error('SESSION_SECRET environment variable is required for session security');
-}
 
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
@@ -33,14 +27,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   session({
-    secret: sessionSecret,
+    secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      sameSite: 'lax',
-    },
+    saveUninitialized: true,
   })
 );
 
