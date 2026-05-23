@@ -9,6 +9,12 @@ pipeline {
             }
         }
 
+        stage('security scan using snyk') {
+             steps {
+                sh 'snyk test --docker myapp:testing'
+            }
+        }
+
         stage('Run Container') {
             steps {
                 sh 'docker run -d -p 5001:5000 --name myapp myapp:testing'
