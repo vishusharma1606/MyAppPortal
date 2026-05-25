@@ -23,6 +23,8 @@ pipeline {
         stage('Run Container') {
             steps {
                 sh '''
+                docker stop myapp || true
+                docker rm myapp || true
                 docker run -d -p 5001:5000 --name myapp vishudock/myapptest:$BUILD_NUMBER
                 '''
             }
