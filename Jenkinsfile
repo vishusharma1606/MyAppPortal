@@ -6,8 +6,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker rmi vishudock/myapptest:$BUILD_NUMBER || true  #remove existing image if it exists
-                docker build --platform linux/amd64 -t vishudock/myapptest:$BUILD_NUMBER .
+                docker build --platform linux/amd64,linux/arm64 -t vishudock/myapptest:$BUILD_NUMBER .
                 '''
             }
         }
@@ -24,8 +23,6 @@ pipeline {
         stage('Run Container') {
             steps {
                 sh '''
-                docker stop myapp || true  #if container is already running, stop it
-                docker rm myapp || true   #remove the container if it exists
                 docker run -d -p 5001:5000 --name myapp vishudock/myapptest:$BUILD_NUMBER
                 '''
             }
