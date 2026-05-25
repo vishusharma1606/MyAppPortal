@@ -11,6 +11,26 @@ pipeline {
             }
         }
 
+        stage('SonarQube Scan') {
+
+            environment {
+                SONAR_TOKEN = credentials('sonar-token')
+            }
+
+            steps {
+                sh '''
+                export PATH=$PATH:/opt/homebrew/bin
+
+                sonar-scanner \
+                -Dsonar.projectKey=myapp \
+                -Dsonar.projectName=myapp \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://localhost:9000 \
+                -Dsonar.login=$SONAR_TOKEN
+                '''
+            }
+        }
+
         stage('security scan using snyk') {
             steps {
                 sh '''
