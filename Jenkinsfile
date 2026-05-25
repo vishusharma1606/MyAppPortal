@@ -47,5 +47,16 @@ pipeline {
             }
         }
 
+        stage('deploy kubernates') {
+            steps {
+                sh '''
+                minikube status 
+                kubectl create deployment myapp --image=vishudock/myapptest:$BUILD_NUMBER 
+                kubectl expose deployment myapp --type=NodePort --port=5000
+                minikube service myapp --url
+                '''
+            }
+        }
+
     }
 }
