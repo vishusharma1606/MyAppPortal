@@ -26,7 +26,7 @@ pipeline {
                 sh '''
                 docker stop myapp || true  #if container is already running, stop it
                 docker rm myapp || true   #remove the container if it exists
-                docker run -d -p 5001:5000 --name myapp vishudock/myapptest:testing
+                docker run -d -p 5001:5000 --name myapp vishudock/myapptest:$BUILD_NUMBER
                 '''
             }
         }
