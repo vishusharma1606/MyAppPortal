@@ -5,14 +5,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build --platform linux/amd64 -t myapp:testing .'
+                sh '''
+                docker rmi vishudock/myapptest:$BUILD_NUMBER || true  #remove existing image if it exists
+                docker build --platform linux/amd64 -t vishudock/myapptest:$BUILD_NUMBER .
+                '''
             }
         }
 
         stage('security scan using snyk') {
             steps {
                 sh '''
-                snyk container test myapp:testing --file=Dockerfile || true
+                snyk container test vishudock/myapptest:$BUILD_NUMBER --file=Dockerfile || true
                 sleep 5
                 '''
             }
@@ -23,7 +26,7 @@ pipeline {
                 sh '''
                 docker stop myapp || true  #if container is already running, stop it
                 docker rm myapp || true   #remove the container if it exists
-                docker run -d -p 5001:5000 --name myapp myapp:testing
+                docker run -d -p 5001:5000 --name myapp vishudock/myapptest:testing
                 '''
             }
         }
@@ -36,5 +39,14 @@ pipeline {
                 curl http://127.0.0.1:5001'''
             }
         }
+
+        stage('push to dockerhub') {
+            steps {
+                sh '''
+                docker push vishudock/myapptest:$BUILD_NUMBER
+                '''
+            }
+        }
+
     }
 }
