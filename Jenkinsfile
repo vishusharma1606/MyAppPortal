@@ -20,7 +20,11 @@ pipeline {
 
         stage('Run Container') {
             steps {
-                sh 'docker run -d -p 5001:5000 --name myapp myapp:testing'
+                sh '''
+                docker stop myapp || true  #if container is already running, stop it
+                docker rm myapp || true   #remove the container if it exists
+                docker run -d -p 5001:5000 --name myapp myapp:testing
+                '''
             }
         }
 
