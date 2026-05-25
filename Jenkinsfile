@@ -50,8 +50,11 @@ pipeline {
         stage('deploy kubernates') {
             steps {
                 sh '''
+                kubectl delete deployment myapp || true
+                sleep 2
                 kubectl create deployment myapp --image=vishudock/myapptest:$BUILD_NUMBER 
                 sleep 10 # wait for the deployment to be ready
+                kubectl delete service myapp || true
                 kubectl expose deployment myapp --type=NodePort --port=5000
                 /opt/homebrew/bin/minikube service myapp --url
                 '''
