@@ -50,8 +50,8 @@ pipeline {
         stage('deploy kubernates') {
             steps {
                 sh '''
-                minikube status 
                 kubectl create deployment myapp --image=vishudock/myapptest:$BUILD_NUMBER 
+                sleep 10 # wait for the deployment to be ready
                 kubectl expose deployment myapp --type=NodePort --port=5000
                 minikube service myapp --url
                 '''
