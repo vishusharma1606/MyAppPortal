@@ -72,6 +72,7 @@ pipeline {
             steps {
                 sh '''
                 SERVICE_URL=$(/opt/homebrew/bin/minikube service myapp --url | head -n 1)
+                echo $SERVICE_URL
                 curl $SERVICE_URL
                 '''
             }
