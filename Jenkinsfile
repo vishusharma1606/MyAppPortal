@@ -21,7 +21,7 @@ pipeline {
                 sh '''
                 export PATH=$PATH:/opt/homebrew/bin
 
-                sonar-scanner \
+                /opt/homebrew/bin/sonar-scanner \
                 -Dsonar.projectKey=myapp \
                 -Dsonar.projectName=myapp \
                 -Dsonar.sources=. \
