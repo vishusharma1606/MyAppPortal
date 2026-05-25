@@ -71,7 +71,7 @@ pipeline {
         stage('test application ') {
             steps {
                 sh '''
-                /opt/homebrew/bin/minikube service myapp 
+                timeout 60 /opt/homebrew/bin/minikube service myapp 
                 '''
             }
         }
